@@ -8,15 +8,21 @@
     var SCISSORS = 2;
 
     // KEY CODES FOR RESULTS
-    var HUMANWIN = 3;
-    var COMPUTERWIN = 4;
-    var DRAW = 5;
+    var HUMANWIN = 0;
+    var COMPUTERWIN = 1;
+    var DRAW = 2;
+    var DELAY = 2500;
 
     // Global Variables
     var totalHumanWins = 0;
     var totalComputerWins = 0;
     var winningPhrases = ["Smooth!", "Good Choice!", "Terrific!", "Great!"];
-    var losingPhrases = ["Terrible!", "You Suck!", "Terrific!", "Great!"];
+    var losingPhrases = ["Terrible!", "You Suck!", "WHAT ARE YOU DOING?!", "Awful!"];
+    var drawPhrases = ["DRAW!", "TIE!", "SAME!"];
+
+    // CSS Classes
+    var riseUpClass = "rise-up";
+    var descendDownClass = "descend-down";
 
     // Elements
     var rockElem = document.getElementById('rock');
@@ -35,16 +41,16 @@
 
     // Event Listeners
     rockElem.addEventListener('click', function(){matchOff(ROCK)}, false);
-    rockElem.addEventListener('mouseover', function(){animateRiser(ROCK)}, false);
-    rockElem.addEventListener('mouseout', function(){animateDescender(ROCK)}, false);
+    rockElem.addEventListener('mouseover', function(){animateRiseAndLower(rockElem, ROCK, riseUpClass, descendDownClass)}, false);
+    rockElem.addEventListener('mouseout', function(){animateRiseAndLower(rockElem, ROCK, descendDownClass, riseUpClass)}, false);
 
     paperElem.addEventListener('click', function(){matchOff(PAPER)}, false);
-    paperElem.addEventListener('mouseover', function(){animateRiser(PAPER)}, false);
-    paperElem.addEventListener('mouseout', function(){animateDescender(PAPER)}, false);
+    paperElem.addEventListener('mouseover', function(){animateRiseAndLower(paperElem, PAPER, riseUpClass, descendDownClass)}, false);
+    paperElem.addEventListener('mouseout', function(){animateRiseAndLower(paperElem, PAPER, descendDownClass, riseUpClass)}, false);
 
     scissorsElem.addEventListener('click', function(){matchOff(SCISSORS)}, false);
-    scissorsElem.addEventListener('mouseover', function(){animateRiser(SCISSORS)}, false);
-    scissorsElem.addEventListener('mouseout', function(){animateDescender(SCISSORS)}, false);
+    scissorsElem.addEventListener('mouseover', function(){animateRiseAndLower(scissorsElem, SCISSORS, riseUpClass, descendDownClass)}, false);
+    scissorsElem.addEventListener('mouseout', function(){animateRiseAndLower(scissorsElem, SCISSORS, descendDownClass, riseUpClass)}, false);
 
 
     // Functions
@@ -93,37 +99,20 @@
         }
     }
 
-    function animateRiser(elem){
-        switch(elem){
-            case ROCK :
-                rockElem.classList.add('rise-up');
-                rockElem.classList.remove('descend-down');
-            break;  
-            case PAPER :
-                paperElem.classList.add('rise-up');
-                paperElem.classList.remove('descend-down');
-            break;  
-            case SCISSORS :
-                scissorsElem.classList.add('rise-up');
-                scissorsElem.classList.remove('descend-down');
-            break;    
-        }
-    }
-
-    function animateDescender(elem){
-        switch(elem){
-            case ROCK :
-                rockElem.classList.add('descend-down');
-                rockElem.classList.remove('rise-up');
-            break;  
-            case PAPER :
-                paperElem.classList.add('descend-down');
-                paperElem.classList.remove('rise-up');
-            break;  
-            case SCISSORS :
-                scissorsElem.classList.add('descend-down');
-                scissorsElem.classList.remove('rise-up');
-            break;    
+    function animateRiseAndLower(elem, elemCode, addClass, removeClass){
+        // This class will add and remove CSS classes for animation / transitions
+        switch(elemCode){
+            case ROCK:
+                elem.classList.add(addClass);
+                elem.classList.remove(removeClass);
+            break;
+            case PAPER:
+                elem.classList.add(addClass);
+                elem.classList.remove(removeClass);
+            case SCISSORS:
+                elem.classList.add(addClass);
+                elem.classList.remove(removeClass);
+            break;
         }
     }
 
@@ -131,39 +120,27 @@
         var timeoutID;
         // Populate Overlay With Information
         // Fade-in and then fade-out classes
+        function fadeHelper(roundOutcome, roundKeyCode, phrases, backgroundColor, timeoutDelay){
+            roundOutcome.classList.add('active');
+            headings[roundKeyCode].innerHTML = phrases[Math.floor(Math.random() * 4)];
+            overlay.classList.add('fade-in');
+            overlay.classList.add(backgroundColor);
+            timeoutID = window.setTimeout(function(){
+                overlay.classList.remove(backgroundColor);
+                overlay.classList.remove('fade-in');
+                roundOutcome.classList.remove('active');
+            }, timeoutDelay);
+        }
 
         switch (result){
             case HUMANWIN : 
-                winRound.classList.add('active');
-                headings[0].innerHTML = winningPhrases[Math.floor(Math.random() * 4)];
-                overlay.classList.add('fade-in');
-                overlay.classList.add('positive');
-                timeoutID = window.setTimeout(function(){
-                    overlay.classList.remove('positive');
-                    overlay.classList.remove('fade-in');
-                    winRound.classList.remove('active');
-                }, 2000);
+                fadeHelper(winRound, HUMANWIN, winningPhrases, 'positive', DELAY);
             break;
             case COMPUTERWIN : 
-                loseRound.classList.add('active');
-                headings[1].innerHTML = losingPhrases[Math.floor(Math.random() * 4)];
-                overlay.classList.add('fade-in');
-                overlay.classList.add('negative');
-                timeoutID = window.setTimeout(function(){
-                    overlay.classList.remove('negative');
-                    overlay.classList.remove('fade-in');
-                    loseRound.classList.remove('active');
-                }, 2000);
+                fadeHelper(loseRound, COMPUTERWIN, losingPhrases, 'negative', DELAY);
             break;
             case DRAW : 
-                drawRound.classList.add('active');
-                overlay.classList.add('fade-in');
-                overlay.classList.add('ambiguous');
-                timeoutID = window.setTimeout(function(){
-                    overlay.classList.remove('ambiguous');
-                    overlay.classList.remove('fade-in');
-                    drawRound.classList.remove('active');
-                }, 2000);
+                fadeHelper(drawRound, DRAW, drawPhrases, 'ambiguous', DELAY);
             break;
         }
 
@@ -202,13 +179,13 @@
             animateGameOver("loss");
         } else if (result == HUMANWIN){
             // Description 0 - 2 for .description divs
-            descriptions[ROCK].innerHTML = descriptionText;
+            descriptions[HUMANWIN].innerHTML = descriptionText;
             animateOverlay(result);
         } else if (result == COMPUTERWIN){
-            descriptions[PAPER].innerHTML = descriptionText;
+            descriptions[COMPUTERWIN].innerHTML = descriptionText;
             animateOverlay(result);   
         } else if (result == DRAW){
-            descriptions[SCISSORS].innerHTML = descriptionText;
+            descriptions[DRAW].innerHTML = descriptionText;
             animateOverlay(result);
         }
     }
@@ -219,7 +196,7 @@
         // Get Computer's Guess
         var computerChoice = computerGuessGenerator();
 
-        // Animate
+        // Animate Computer's Image
         animateToImage(computerChoice);
 
         // Compare Elements
