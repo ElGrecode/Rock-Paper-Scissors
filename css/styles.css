@@ -33,7 +33,7 @@
   -ms-transition: 1s;
   -o-transition: 1s;
   transition: 1s;
-  display: none;
+  opacity: 0;
 }
 
 .positive{
@@ -44,24 +44,24 @@
     background: rgb(204, 51, 51);
 }
 
-.win-round, .lose-round, .match-result {
+.ambiguous {
+    background: rgb(52, 52, 204);
+}
+
+.win-round, .lose-round, .draw-round, .match-result {
     width: 700px;
     text-align: center;
-    margin: 250px auto;
+    margin: 225px auto;
     color: white;
     font-family: 'Josefin Sans', sans-serif;
 }
 
-.win-round {
+.win-round, .lose-round, .draw-round, .match-result {
     display: none;
 }
 
-.lose-round {
-    display: none;
-}
-
-.match-result {
-    display: none;
+.active {
+    display: block;
 }
 
 .big {
@@ -70,15 +70,16 @@
 }
 
 .description {
-    font-size: 50px;
+    font-size: 40px;
 }
 
-.result img {
+.match-result img {
     position: absolute;
     bottom: 0;
     left: 33%;
     width: 350px;
     margin: 0 auto;
+    display:none;
 }
 
 /* Human Top Half */
@@ -122,6 +123,10 @@ img.bigger {
     width: 150px;
 }
 
+img.smaller {
+    width: 120px;
+}
+
 .user-choice section {
     height: 5px;
     width: 100%;
@@ -160,14 +165,37 @@ img.bigger {
 
 .rock {
     font-family: 'Merriweather Sans', sans-serif;
+    height: 290px;
 }
 
 .paper {
     font-family: 'Josefin Sans', sans-serif;
+    height: 290px;
 }
 
 .scissors {
     font-family: 'Dancing Script', cursive;
+    height: 290px;
+}
+
+.rise-up{
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    -ms-transition: .3s;
+    -o-transition: .3s;
+    transition: .3s;
+    margin-top: -10px;
+    opacity: .6;
+}
+
+.descend-down {
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    -ms-transition: .3s;
+    -o-transition: .3s;
+    transition: .3s;
+    margin-top: 0;
+    opacity: 1;
 }
 
 .vs {

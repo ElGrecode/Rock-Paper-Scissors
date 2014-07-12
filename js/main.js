@@ -15,6 +15,8 @@
     // Global Variables
     var totalHumanWins = 0;
     var totalComputerWins = 0;
+    var winningPhrases = ["Smooth!", "Good Choice!", "Terrific!", "Great!"];
+    var losingPhrases = ["Terrible!", "You Suck!", "Terrific!", "Great!"];
 
     // Elements
     var rockElem = document.getElementById('rock');
@@ -22,14 +24,189 @@
     var scissorsElem = document.getElementById('scissors');
     var computerChoiceElem = document.getElementById('computer-choice-image');
     var overlay = document.getElementById('overlay');
+    var winRound = document.getElementById('win-round');
+    var loseRound = document.getElementById('lose-round');
+    var drawRound = document.getElementById('draw-round');
+    var matchResultElem = document.getElementById('match-result');
+    var descriptions = document.getElementsByClassName('description');
+    var human-icon = document.getElementById('human-icon');
+    var robot-icon = document.getElementById('robot-icon');
 
     // Event Listeners
     rockElem.addEventListener('click', function(){matchOff(ROCK)}, false);
+    rockElem.addEventListener('mouseover', function(){animateRiser(ROCK)}, false);
+    rockElem.addEventListener('mouseout', function(){animateDescender(ROCK)}, false);
+
     paperElem.addEventListener('click', function(){matchOff(PAPER)}, false);
+    paperElem.addEventListener('mouseover', function(){animateRiser(PAPER)}, false);
+    paperElem.addEventListener('mouseout', function(){animateDescender(PAPER)}, false);
+
     scissorsElem.addEventListener('click', function(){matchOff(SCISSORS)}, false);
+    scissorsElem.addEventListener('mouseover', function(){animateRiser(SCISSORS)}, false);
+    scissorsElem.addEventListener('mouseout', function(){animateDescender(SCISSORS)}, false);
 
 
     // Functions
+    function computerGuessGenerator(){
+        var guess;
+        // Randomize a guess for the computer
+        guess = Math.floor(Math.random() * 3);
+        return guess;
+    }
+
+    function compareGuesses(humanGuess, computerGuess){
+        // Guesses are the same
+        if (humanGuess == computerGuess){
+            return DRAW;
+        }
+        // Guesses are different
+        if (humanGuess == ROCK && computerGuess == PAPER){
+            totalComputerWins++;
+            return COMPUTERWIN;
+        } else if (humanGuess == ROCK && computerGuess == SCISSORS){
+            totalHumanWins++;
+            return HUMANWIN;
+        } else if (humanGuess == PAPER && computerGuess == SCISSORS){
+            totalComputerWins++;
+            return COMPUTERWIN;
+        } else if (humanGuess == PAPER && computerGuess == ROCK){
+            totalHumanWins++;
+            return HUMANWIN;
+        } else if (humanGuess == SCISSORS && computerGuess == ROCK){
+            totalComputerWins++;
+            return COMPUTERWIN;
+        } else if (humanGuess == SCISSORS && computerGuess == PAPER){
+            totalHumanWins++;
+            return HUMANWIN;
+        }
+
+    }
+
+    function animateToImage(image){
+        if (image == ROCK){
+            computerChoiceElem.style.backgroundPosition = "0%";
+        } else if (image == PAPER){
+            computerChoiceElem.style.backgroundPosition = "50%";
+        } else if (image == SCISSORS){
+           computerChoiceElem.style.backgroundPosition = "100%";
+        }
+    }
+
+    function animateRiser(elem){
+        switch(elem){
+            case ROCK :
+                rockElem.classList.add('rise-up');
+                rockElem.classList.remove('descend-down');
+            break;  
+            case PAPER :
+                paperElem.classList.add('rise-up');
+                paperElem.classList.remove('descend-down');
+            break;  
+            case SCISSORS :
+                scissorsElem.classList.add('rise-up');
+                scissorsElem.classList.remove('descend-down');
+            break;    
+        }
+    }
+
+    function animateDescender(elem){
+        switch(elem){
+            case ROCK :
+                rockElem.classList.add('descend-down');
+                rockElem.classList.remove('rise-up');
+            break;  
+            case PAPER :
+                paperElem.classList.add('descend-down');
+                paperElem.classList.remove('rise-up');
+            break;  
+            case SCISSORS :
+                scissorsElem.classList.add('descend-down');
+                scissorsElem.classList.remove('rise-up');
+            break;    
+        }
+    }
+
+    function animateOverlay(result){
+        var timeoutID;
+        // Populate Overlay With Information
+
+        switch (result){
+            case HUMANWIN : 
+                winRound.classList.add('active');
+                overlay.classList.add('fade-in');
+                overlay.classList.add('positive');
+                timeoutID = window.setTimeout(function(){
+                    overlay.classList.remove('positive');
+                    overlay.classList.remove('fade-in');
+                    winRound.classList.remove('active');
+                }, 2000);
+            break;
+            case COMPUTERWIN : 
+               loseRound.classList.add('active');
+                overlay.classList.add('fade-in');
+                overlay.classList.add('negative');
+                timeoutID = window.setTimeout(function(){
+                    overlay.classList.remove('negative');
+                    overlay.classList.remove('fade-in');
+                    loseRound.classList.remove('active');
+                }, 2000);
+            break;
+            case DRAW : 
+                drawRound.classList.add('active');
+                overlay.classList.add('fade-in');
+                overlay.classList.add('ambiguous');
+                timeoutID = window.setTimeout(function(){
+                    overlay.classList.remove('ambiguous');
+                    overlay.classList.remove('fade-in');
+                    drawRound.classList.remove('active');
+                }, 2000);
+            break;
+        }
+
+    }
+
+    function animateGameOver(matchResult){
+        var winText = "You have won the match.<br>The Humans are safe... for now";
+        var lossText = "The Computer had won.<br>The singularity is approaching";
+
+        if (matchResult == "win"){
+            // Insert win text, fade-in overlay, show relative image
+            descriptions[3].innerHTML = winText;
+            overlay.classList.add('fade-in');
+            overlay.classList.add('positive');
+            matchResultElem.classList.add('active');
+        } else if (matchResult == "lose"){
+            descriptions[3].innerHTML = winText;
+            overlay.classList.add('fade-in');
+            overlay.classList.add('negative');
+            matchResultElem.classList.add('active');
+        }
+    }
+
+    function displayResults(result) {
+        var descriptionText = "Human Wins: " + totalHumanWins + " : "
+        + "Computer Wins: " + totalComputerWins;
+        // 5 Options, Human Wins Match, Computer Wins Match,
+        //            Human Wins Round, Computer Wins Round, Draw Round
+        if (totalHumanWins == NECESSARYWINS){
+            // Human Wins, Display .match-result
+            animateGameOver("win");
+        } else if (totalComputerWins == NECESSARYWINS){
+            // Computer Wins, Display .match-result
+            animateGameOver("loss");
+        } else if (result == HUMANWIN){
+            // Description 0 - 2 for .description divs
+            descriptions[ROCK].innerHTML = descriptionText;
+            animateOverlay(result);
+        } else if (result == COMPUTERWIN){
+            descriptions[PAPER].innerHTML = descriptionText;
+            animateOverlay(result);   
+        } else if (result == DRAW){
+            descriptions[SCISSORS].innerHTML = descriptionText;
+            animateOverlay(result);
+        }
+    }
+
     function matchOff(el){
         var result;
         var humanChoice = el;
@@ -45,93 +222,5 @@
         // Display Results
         displayResults(result);
     }
-
-    function computerGuessGenerator(){
-        var guess;
-        // Randomize a guess for the computer
-        guess = Math.floor(Math.random() * 3);
-        return guess;
-    }
-
-    function compareGuesses(humanGuess, computerGuess){
-        // Guesses are the same
-        if (humanGuess == computerGuess){
-            return DRAW;
-        }
-        // Guesses are different
-        if (humanGuess == ROCK && computerGuess == PAPER){
-            return COMPUTERWIN;
-        } else if (humanGuess == ROCK && computerGuess == SCISSORS){
-            return HUMANWIN;
-        } else if (humanGuess == PAPER && computerGuess == SCISSORS){
-            return COMPUTERWIN;
-        } else if (humanGuess == PAPER && computerGuess == ROCK){
-            return HUMANWIN;
-        } else if (humanGuess == SCISSORS && computerGuess == ROCK){
-            return COMPUTERWIN;
-        } else if (humanGuess == SCISSORS && computerGuess == PAPER){
-            return HUMANWIN;
-        }
-
-    }
-
-    function animateToImage(image){
-        if (image == ROCK){
-            computerChoiceElem.style.backgroundPosition = "0%";
-            alert("Compute chooses ROCK");
-        } else if (image == PAPER){
-            computerChoiceElem.style.backgroundPosition = "50%";
-             alert("Compute chooses PAPER");
-        } else if (image == SCISSORS){
-           computerChoiceElem.style.backgroundPosition = "100%";
-             alert("Compute chooses SCISSORS");
-        }
-    }
-
-    function animateOverlay(result){
-        // Wait a second
-        // Populate overlay with information
-        // if match win / match loss
-            // Fade in Overlay
-        // if round win / round loss / 
-            // Fade in Overlay
-            // Fade out Overlay
-        switch (result){
-            case HUMANWIN : 
-                overlay.classList.add('fade-in');
-            break;
-            case COMPUTERWIN : 
-               overlay.classList.add('fade-in');
-            break;
-            case DRAW : 
-                overlay.classList.add('fade-in');
-            break;
-        }
-
-    }
-
-    function displayResults(result) {
-        // 4 Options, Human Wins Match, Computer Wins Match,
-        //            Human Wins Round, Computer Wins Round
-            alert("In Display Results");
-        if (totalHumanWins == NECESSARYWINS){
-            alert("GAME OVER HUMAN WINS");
-        } else if (totalComputerWins == NECESSARYWINS){
-            alert("GAME OVER HUMAN WINS");
-        } else if (result == HUMANWIN){
-            alert("Human Wins round");
-            animateOverlay(result);
-        } else if (result == COMPUTERWIN){
-            animateOverlay(result);   
-        } else if (result == DRAW){
-            animateOverlay(result);
-        }
-
-
-    }
-
-
-
-
 
 })();
