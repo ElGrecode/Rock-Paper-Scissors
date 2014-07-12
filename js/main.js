@@ -13,12 +13,12 @@
     var DRAW = 2;
     var DELAY = 2500;
 
-    // Global Variables
+    // Global Variables and Initializations
     var totalHumanWins = 0;
     var totalComputerWins = 0;
     var winningPhrases = ["Smooth!", "Good Choice!", "Terrific!", "Great!"];
     var losingPhrases = ["Terrible!", "You Suck!", "WHAT ARE YOU DOING?!", "Awful!"];
-    var drawPhrases = ["DRAW!", "TIE!", "SAME!"];
+    var drawPhrases = ["DRAW!", "TIE!", "SAME!", "wtf?"];
 
     // CSS Classes
     var riseUpClass = "rise-up";
@@ -86,10 +86,10 @@
             totalHumanWins++;
             return HUMANWIN;
         }
-
     }
 
     function animateToImage(image){
+        // Animate Bottom Computer Image
         if (image == ROCK){
             computerChoiceElem.style.backgroundPosition = "0%";
         } else if (image == PAPER){
@@ -117,30 +117,30 @@
     }
 
     function animateOverlay(result){
-        var timeoutID;
+        
         // Populate Overlay With Information
         // Fade-in and then fade-out classes
-        function fadeHelper(roundOutcome, roundKeyCode, phrases, backgroundColor, timeoutDelay){
+        function fadeHelper(roundOutcome, roundKeyCode, phrases, backgroundColor){
             roundOutcome.classList.add('active');
             headings[roundKeyCode].innerHTML = phrases[Math.floor(Math.random() * 4)];
             overlay.classList.add('fade-in');
             overlay.classList.add(backgroundColor);
-            timeoutID = window.setTimeout(function(){
+            window.setTimeout(function(){
                 overlay.classList.remove(backgroundColor);
                 overlay.classList.remove('fade-in');
                 roundOutcome.classList.remove('active');
-            }, timeoutDelay);
+            }, DELAY);
         }
 
         switch (result){
             case HUMANWIN : 
-                fadeHelper(winRound, HUMANWIN, winningPhrases, 'positive', DELAY);
+                fadeHelper(winRound, HUMANWIN, winningPhrases, 'positive');
             break;
             case COMPUTERWIN : 
-                fadeHelper(loseRound, COMPUTERWIN, losingPhrases, 'negative', DELAY);
+                fadeHelper(loseRound, COMPUTERWIN, losingPhrases, 'negative');
             break;
             case DRAW : 
-                fadeHelper(drawRound, DRAW, drawPhrases, 'ambiguous', DELAY);
+                fadeHelper(drawRound, DRAW, drawPhrases, 'ambiguous');
             break;
         }
 
@@ -148,7 +148,7 @@
 
     function animateGameOver(matchResult){
         var winText = "You have won the match.<br>The Humans are safe... for now";
-        var lossText = "The Computer had won.<br>The singularity is approaching";
+        var lossText = "The Computer has won.<br>The singularity is approaching";
 
         if (matchResult == "win"){
             // Insert win text, fade-in overlay, show relative image
