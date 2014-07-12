@@ -18,7 +18,7 @@
     var totalComputerWins = 0;
     var winningPhrases = ["Smooth!", "Good Choice!", "Terrific!", "Great!"];
     var losingPhrases = ["Terrible!", "You Suck!", "WHAT ARE YOU DOING?!", "Awful!"];
-    var drawPhrases = ["DRAW!", "TIE!", "SAME!", "wtf?"];
+    var drawPhrases = ["DRAW!", "TIE!", "SAME!", "SAMESIES!"];
 
     // CSS Classes
     var riseUpClass = "rise-up";
@@ -117,7 +117,7 @@
     }
 
     function animateOverlay(result){
-        
+
         // Populate Overlay With Information
         // Fade-in and then fade-out classes
         function fadeHelper(roundOutcome, roundKeyCode, phrases, backgroundColor){
@@ -133,13 +133,13 @@
         }
 
         switch (result){
-            case HUMANWIN : 
+            case HUMANWIN :
                 fadeHelper(winRound, HUMANWIN, winningPhrases, 'positive');
             break;
-            case COMPUTERWIN : 
+            case COMPUTERWIN :
                 fadeHelper(loseRound, COMPUTERWIN, losingPhrases, 'negative');
             break;
-            case DRAW : 
+            case DRAW :
                 fadeHelper(drawRound, DRAW, drawPhrases, 'ambiguous');
             break;
         }
@@ -183,7 +183,7 @@
             animateOverlay(result);
         } else if (result == COMPUTERWIN){
             descriptions[COMPUTERWIN].innerHTML = descriptionText;
-            animateOverlay(result);   
+            animateOverlay(result);
         } else if (result == DRAW){
             descriptions[DRAW].innerHTML = descriptionText;
             animateOverlay(result);
