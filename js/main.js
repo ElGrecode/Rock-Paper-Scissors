@@ -1,6 +1,6 @@
 (function(){
     // Play to 7]
-    var NECESSARYWINS = 2;
+    var NECESSARYWINS = 5;
 
     // KEY CODES FOR OPTIONS
     var ROCK = 0;
@@ -28,9 +28,10 @@
     var loseRound = document.getElementById('lose-round');
     var drawRound = document.getElementById('draw-round');
     var matchResultElem = document.getElementById('match-result');
+    var headings = document.getElementsByClassName('big');
     var descriptions = document.getElementsByClassName('description');
-    var human-icon = document.getElementById('human-icon');
-    var robot-icon = document.getElementById('robot-icon');
+    var humanIcon = document.getElementById('human-icon');
+    var robotIcon = document.getElementById('robot-icon');
 
     // Event Listeners
     rockElem.addEventListener('click', function(){matchOff(ROCK)}, false);
@@ -129,10 +130,12 @@
     function animateOverlay(result){
         var timeoutID;
         // Populate Overlay With Information
+        // Fade-in and then fade-out classes
 
         switch (result){
             case HUMANWIN : 
                 winRound.classList.add('active');
+                headings[0].innerHTML = winningPhrases[Math.floor(Math.random() * 4)];
                 overlay.classList.add('fade-in');
                 overlay.classList.add('positive');
                 timeoutID = window.setTimeout(function(){
@@ -142,7 +145,8 @@
                 }, 2000);
             break;
             case COMPUTERWIN : 
-               loseRound.classList.add('active');
+                loseRound.classList.add('active');
+                headings[1].innerHTML = losingPhrases[Math.floor(Math.random() * 4)];
                 overlay.classList.add('fade-in');
                 overlay.classList.add('negative');
                 timeoutID = window.setTimeout(function(){
@@ -172,11 +176,13 @@
         if (matchResult == "win"){
             // Insert win text, fade-in overlay, show relative image
             descriptions[3].innerHTML = winText;
+            humanIcon.classList.add('active');
             overlay.classList.add('fade-in');
             overlay.classList.add('positive');
             matchResultElem.classList.add('active');
-        } else if (matchResult == "lose"){
-            descriptions[3].innerHTML = winText;
+        } else if (matchResult == "loss"){
+            descriptions[3].innerHTML = lossText;
+            robotIcon.classList.add('active');
             overlay.classList.add('fade-in');
             overlay.classList.add('negative');
             matchResultElem.classList.add('active');

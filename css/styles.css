@@ -60,10 +60,6 @@
     display: none;
 }
 
-.active {
-    display: block;
-}
-
 .big {
     font-size: 100px;
     margin-bottom: 20px;
@@ -80,6 +76,10 @@
     width: 350px;
     margin: 0 auto;
     display:none;
+}
+
+.active, img.active {
+    display: block;
 }
 
 /* Human Top Half */
