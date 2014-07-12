@@ -1,15 +1,15 @@
 (function(){
-    // GLOBAL PARAMS
-
     // Play to 7
     var NECESSARYWINS = 2;
-    var humanWins = 0;
-    var computerWins = 0;
 
     // KEY FOR OPTIONS
     var ROCK = 0;
     var PAPER = 1;
     var SCISSORS = 2;
+
+    // Global Variables
+    var humanWins = 0;
+    var computerWins = 0;
 
     // Elements
     var rockElem = document.getElementById('rock');

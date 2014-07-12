@@ -7,6 +7,8 @@
     height: 100%;
 }
 
+/* Overlay Result */
+
 .overlay {
     position: absolute;
     width: 100%;
@@ -23,7 +25,7 @@
     background: rgb(204, 51, 51);
 }
 
-.win, .loss {
+.win, .loss, .result {
     width: 700px;
     text-align: center;
     margin: 250px auto;
@@ -39,6 +41,16 @@
 .description {
     font-size: 50px;
 }
+
+.result img {
+    position: absolute;
+    bottom: 0;
+    left: 33%;
+    width: 350px;
+    margin: 0 auto;
+}
+
+/* Human Top Half */
 
 main {
     width: 960px;
@@ -132,6 +144,8 @@ img.bigger {
     text-align: center;
     font-size: 40px;
 }
+
+/* Robot Bottom Half */
 
 .computer-choice {
     margin-top: 55px;
